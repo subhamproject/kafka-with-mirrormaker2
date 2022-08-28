@@ -1,0 +1,112 @@
+version: '3'
+services:
+    zk4:
+        image: zk-image
+        container_name: zk4
+        build:
+         context: .
+         dockerfile: Dockerfile.zk
+        restart: always
+        hostname: zk4
+        ports:
+            - "2184:2181"
+        environment:
+            ZK_ID: 4
+        volumes:
+          - ./zk4.cfg:/zk4/zk4.cfg
+
+    zk5:
+        image: zk-image
+        container_name: zk5
+        build:
+         context: .
+         dockerfile: Dockerfile.zk
+        restart: always
+        hostname: zk5
+        ports:
+            - "2185:2181"
+        environment:
+            ZK_ID: 5
+        volumes:
+          - ./zk5.cfg:/zk5/zk5.cfg
+
+    zk6:
+        image: zk-image
+        container_name: zk6
+        build: 
+         context: .
+         dockerfile: Dockerfile.zk
+        restart: always
+        hostname: zk6
+        ports:
+            - "2186:2181"
+        environment:
+            ZK_ID: 6
+        volumes:
+          - ./zk6.cfg:/zk6/zk6.cfg
+
+    kafka4:
+        image: my-kafka-ssl:latest
+        container_name: kafka4
+        build:
+         context: .
+         dockerfile: Dockerfile.kafka
+        restart: always
+        hostname: kafka4
+        ports:
+          - "9094:9092"
+        depends_on:
+          - zk4
+          - zk5
+          - zk6
+        environment:
+          BROKER_ID: 4
+          ZK_SERVER: zk4:2181,zk5:2181,zk6:2181
+        volumes:
+          - ./kafka.properties:/broker/kafka.properties
+          - ./secrets/kafka4.truststore.jks:/kafka4/kafka4.truststore.jks
+          - ./secrets/kafka4.keystore.jks:/kafka4/kafka4.keystore.jks
+
+    kafka5:
+        image: my-kafka-ssl:latest
+        container_name: kafka5
+        build:
+         context: .
+         dockerfile: Dockerfile.kafka
+        restart: always
+        hostname: kafka5
+        ports:
+          - "9095:9092"
+        depends_on:
+          - zk4
+          - zk5
+          - zk6
+        environment:
+          BROKER_ID: 5
+          ZK_SERVER: zk4:2181,zk5:2181,zk6:2181
+        volumes:
+          - ./kafka.properties:/broker/kafka.properties
+          - ./secrets/kafka5.truststore.jks:/kafka5/kafka5.truststore.jks
+          - ./secrets/kafka5.keystore.jks:/kafka5/kafka5.keystore.jks
+
+    kafka6:
+        image: my-kafka-ssl:latest
+        container_name: kafka6
+        build:
+         context: .
+         dockerfile: Dockerfile.kafka
+        restart: always
+        hostname: kafka6
+        ports:
+          - "9096:9092"
+        depends_on:
+          - zk4
+          - zk5
+          - zk6
+        environment:
+          BROKER_ID: 6
+          ZK_SERVER: zk4:2181,zk5:2181,zk6:2181
+        volumes:
+          - ./kafka.properties:/broker/kafka.properties
+          - ./secrets/kafka6.truststore.jks:/kafka6/kafka6.truststore.jks
+          - ./secrets/kafka6.keystore.jks:/kafka6/kafka6.keystore.jks

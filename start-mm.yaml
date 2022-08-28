@@ -1,0 +1,12 @@
+version: '3'
+services:
+
+    mm2:
+        image: bitnami/kafka:3.1.0
+        container_name: mm2
+        entrypoint: /opt/bitnami/kafka/bin/connect-mirror-maker.sh
+        command: /tmp/mm2.properties
+        restart: always
+        hostname: mm2
+        volumes:
+          - $PWD:/tmp
